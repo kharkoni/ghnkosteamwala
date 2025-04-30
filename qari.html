@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Al Qari</title>
+    <link rel="icon" type="image/x-icon" href="icon.ico">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        body {
+            background-color: #000;
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background-image: url('background1.gif');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 1;
+        }
+        
+        .profile-container {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            padding: 2rem;
+            background-color: rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(209, 40, 40, 0.5);
+            max-width: 500px;
+            width: 90%;
+            backdrop-filter: blur(0.0001px);
+            border: 1px solid rgba(199, 32, 32, 0.3);
+            animation: fadeIn 0.8s ease-in-out;
+            margin: 2rem 0;
+        }
+        
+        .avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #8f0000;
+            margin-bottom: 1.5rem;
+            transition: transform 0.3s ease;
+        }
+        
+        .avatar:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 15px rgba(255, 0, 34, 0.8);
+        }
+        
+        .username {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            color: #8f0000;
+            text-transform: lowercase;
+            font-weight: 600;
+        }
+        
+        .username span {
+            display: block;
+            font-size: 1.5rem;
+            color: #fff;
+            margin-top: 0.3rem;
+            font-weight: 400;
+        }
+        
+        .bio {
+            font-size: 1rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.5;
+            color: #ccc;
+        }
+        
+        .viewer-container {
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            margin-top: 1.5rem;
+            gap: 10px;
+        }
+        
+        .viewer-counter {
+            display: flex;
+            align-items: center;
+            font-size: 0.9rem;
+            color: #aaa;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 8px 15px;
+            border-radius: 20px;
+            backdrop-filter: blur(5px);
+        }
+        
+        .viewer-counter i {
+            margin-right: 0.5rem;
+            color: #8f0000;
+        }
+        
+        .info-icon {
+            background: rgba(0, 0, 0, 0.5);
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #8f0000;
+            cursor: pointer;
+            backdrop-filter: blur(5px);
+            transition: all 0.3s ease;
+        }
+        
+        .info-icon:hover {
+            background: rgba(212, 0, 0, 0.3);
+            transform: scale(1.1);
+        }
+        
+        /* Audio Controls */
+        .audio-controls {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transition: all 0.3s ease;
+        }
+        
+        .sound-btn {
+            background: rgba(0, 0, 0, 0.5);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #8f0000;
+            font-size: 1.5rem;
+            cursor: pointer;
+            border: none;
+            backdrop-filter: blur(5px);
+            transition: all 0.3s ease;
+        }
+        
+        .sound-btn:hover {
+            background: rgba(212, 0, 0, 0.3);
+            transform: scale(1.1);
+        }
+        
+        .sound-btn:hover + .volume-container,
+        .volume-container:hover {
+            width: 150px;
+            padding: 0 15px;
+        }
+        
+        .volume-container {
+            display: flex;
+            align-items: center;
+            width: 0;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 25px;
+            backdrop-filter: blur(5px);
+            height: 50px;
+        }
+        
+        .volume-slider {
+            width: 100%;
+            -webkit-appearance: none;
+            height: 6px;
+            background: #333;
+            border-radius: 3px;
+            outline: none;
+        }
+        
+        .volume-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 18px;
+            height: 18px;
+            background: #8f0000;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+        }
+        
+        /* Fully Blurred Welcome Overlay */
+        .welcome-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            cursor: pointer;
+            backdrop-filter: blur(15px);
+        }
+        
+        .welcome-overlay h1 {
+            font-size: 2.5rem;
+            color: #8f0000;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+        
+        .welcome-overlay p {
+            font-size: 1.2rem;
+            color: #ccc;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        
+        .enter-btn {
+            background: rgba(212, 0, 0, 0.3);
+            color: white;
+            border: 2px solid #8f0000;
+            padding: 10px 30px;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
+        }
+        
+        .enter-btn:hover {
+            background: rgba(212, 0, 0, 0.5);
+            transform: scale(1.05);
+        }
+        
+        /* Footer */
+        footer {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            text-align: center;
+            padding: 10px 0;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            z-index: 2;
+            font-size: 0.9rem;
+            color: #aaa;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Fully Blurred Welcome Overlay -->
+    <div class="welcome-overlay" id="welcomeOverlay">
+        <div class="welcome-content">
+            <h1>Welcome</h1>
+            <p>Click anywhere to enter</p>
+        </div>
+    </div>
+
+    <!-- Audio Controls (Top Left) -->
+    <div class="audio-controls">
+        <button class="sound-btn" id="soundBtn">
+            <i class="fas fa-volume-up"></i>
+        </button>
+        <div class="volume-container">
+            <input type="range" id="volumeControl" class="volume-slider" min="0" max="1" step="0.01" value="0.5">
+        </div>
+    </div>
+
+    <!-- YouTube Player (Hidden) -->
+    <div id="player"></div>
+
+<!-- Profile Content -->
+<div class="profile-container">
+    <img src="avatar1.png" alt="Civi" class="avatar">
+    <h1 class="username">Mullah Baradar  <br><span>Qari</span></h1>
+    <p class="bio">Always Chill Ghr Ghr Ghr </p>
+    <div class="viewer-container" style="display: flex; justify-content: center; align-items: center;">
+
+        <a href="https://alqulol.xyz" target="_blank" class="info-link">
+            <div class="info-icon" title="Komaak@alqulol.xyz">
+                <i class="fas fa-info"></i>
+            </div>
+        </a>
+        <a href="https://discord.gg/Bs76Mmcm6v" target="_blank" class="info-link">
+            <div class="info-icon" title="Discord Server">
+                <i class="fa fa-globe"></i>
+            </div>
+        </a>
+        
+    </div>
+</div>
+
+    <!-- Footer -->
+    <footer>
+        Bro it is AlQulol hahahahahahhahaha !!!! - 2025                                                                                        dar bigi 
+    </footer>
+
+    <script>
+        // Welcome overlay
+        const welcomeOverlay = document.getElementById('welcomeOverlay');
+        const soundBtn = document.getElementById('soundBtn');
+        const volumeControl = document.getElementById('volumeControl');
+        const audioControls = document.querySelector('.audio-controls');
+        const viewCountElement = document.getElementById('viewCount');
+        
+        // Hide audio controls initially
+        audioControls.style.display = 'none';
+        
+        // YouTube player variables
+        let player;
+        let isPlaying = false;
+        
+        // Load YouTube IFrame API
+        function onYouTubeIframeAPIReady() {
+            player = new YT.Player('player', {
+                height: '0',
+                width: '0',
+                videoId: 'mMFXtPET3S8',  // Your requested song
+                playerVars: {
+                    'autoplay': 1,
+                    'controls': 0,
+                    'disablekb': 1,
+                    'fs': 0,
+                    'loop': 1,
+                    'modestbranding': 1,
+                    'playsinline': 1,
+                    'rel': 0
+                },
+                events: {
+                    'onReady': onPlayerReady,
+                    'onStateChange': onPlayerStateChange
+                }
+            });
+        }
+        
+        function onPlayerReady(event) {
+            event.target.setVolume(volumeControl.value * 100);
+            event.target.playVideo();
+        }
+        
+        function onPlayerStateChange(event) {
+            if (event.data === YT.PlayerState.PLAYING) {
+                isPlaying = true;
+                soundBtn.innerHTML = '<i class="fas fa-volume-up"></i>';
+            } else if (event.data === YT.PlayerState.PAUSED || event.data === YT.PlayerState.ENDED) {
+                isPlaying = false;
+                soundBtn.innerHTML = '<i class="fas fa-volume-mute"></i>';
+            }
+        }
+        
+        // IP-based view counter using a free API
+        async function getViewerCount() {
+            try {
+                // Get visitor's IP address
+                const ipResponse = await fetch('https://api.ipify.org?format=json');
+                const ipData = await ipResponse.json();
+                const userIP = ipData.ip;
+                
+                // Check if this IP has visited before (using localStorage as fallback)
+                const visitedIPs = JSON.parse(localStorage.getItem('visitedIPs') || '[]');
+                
+                if (!visitedIPs.includes(userIP)) {
+                    visitedIPs.push(userIP);
+                    localStorage.setItem('visitedIPs', JSON.stringify(visitedIPs));
+                    
+                    // Update view count (stored in localStorage)
+                    let currentCount = parseInt(localStorage.getItem('viewCount') || '250');
+                    currentCount++;
+                    localStorage.setItem('viewCount', currentCount);
+                    viewCountElement.textContent = currentCount;
+                } else {
+                    // Show existing count
+                    viewCountElement.textContent = localStorage.getItem('viewCount') || '250';
+                }
+            } catch (error) {
+                console.error("Error tracking views:", error);
+                // Fallback to simple localStorage counter if IP API fails
+                let currentCount = parseInt(localStorage.getItem('viewCount') || '250');
+                if (!localStorage.getItem('hasVisited')) {
+                    currentCount++;
+                    localStorage.setItem('viewCount', currentCount);
+                    localStorage.setItem('hasVisited', 'true');
+                }
+                viewCountElement.textContent = currentCount;
+            }
+        }
+        
+        // Click to enter function
+        function enterSite() {
+            welcomeOverlay.style.opacity = '0';
+            setTimeout(() => {
+                welcomeOverlay.style.display = 'none';
+                audioControls.style.display = 'flex';
+                
+                if (player && player.playVideo) {
+                    player.playVideo();
+                    isPlaying = true;
+                }
+                
+                // Initialize view counter
+                getViewerCount();
+            }, 500);
+        }
+        
+        // Add click event to the entire overlay
+        welcomeOverlay.addEventListener('click', enterSite);
+        
+        // Also add to the welcome content in case event propagation is stopped
+        document.querySelector('.welcome-content').addEventListener('click', function(e) {
+            e.stopPropagation();
+            enterSite();
+        });
+        
+        // Volume control
+        volumeControl.addEventListener('input', () => {
+            if (player && player.setVolume) {
+                player.setVolume(volumeControl.value * 100);
+            }
+            if (volumeControl.value === '0') {
+                soundBtn.innerHTML = '<i class="fas fa-volume-mute"></i>';
+            } else {
+                soundBtn.innerHTML = '<i class="fas fa-volume-up"></i>';
+            }
+        });
+        
+        // Toggle sound
+        soundBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (!player) return;
+            
+            if (isPlaying) {
+                player.pauseVideo();
+                soundBtn.innerHTML = '<i class="fas fa-volume-mute"></i>';
+            } else {
+                player.playVideo();
+                soundBtn.innerHTML = '<i class="fas fa-volume-up"></i>';
+            }
+        });
+        
+        // Load YouTube IFrame API
+        const tag = document.createElement('script');
+        tag.src = "https://www.youtube.com/iframe_api";
+        const firstScriptTag = document.getElementsByTagName('script')[0];
+        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+    </script>
+</body>
+</html>
+
